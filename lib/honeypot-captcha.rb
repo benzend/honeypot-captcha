@@ -15,7 +15,10 @@ module HoneypotCaptcha
     end
 
     def protect_from_spam
-      head :ok if honeypot_fields.any? { |f,l| !params[f].blank? }
+      return unless spammer_detected?
+
+      after_protected
+      head :ok
     end
 
     def self.included(base) # :nodoc:
@@ -28,6 +31,16 @@ module HoneypotCaptcha
       elsif base.respond_to? :before_filter
         base.send :prepend_before_filter, :protect_from_spam, :only => [:create, :update]
       end
+    end
+
+    private
+
+    def spammer_detected?
+      honeypot_fields.any? { |f,l| !params[f].blank? }
+    end
+
+    def after_protected
+      after_honeypot_spammer_caught if method_defined? :after_honeypot_spammer_caught
     end
   end
 end
