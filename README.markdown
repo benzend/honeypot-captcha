@@ -110,6 +110,16 @@ provide a non-inline CSS class that will be applied to hide honeypot fields
       display: none;
     }
 
+### Running an after action after detecting a spammer
+
+Run an extra action after detecting a spammer by creating a function within your controller:
+
+```ruby
+def after_honeypot_spammer_caught
+  # capture some metrics, error logs, etc
+end
+```
+
 ## Note on Patches/Pull Requests
 
 * Fork the project.
